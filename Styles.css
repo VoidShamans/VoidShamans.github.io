@@ -1,0 +1,40 @@
+.body-class {
+    background-color: royalblue;
+}
+
+.header-class {
+    background-color: rgb(9, 46, 167);
+    color: sandybrown;
+}
+.nav-class {
+    background-color: white;
+    color: blueviolet;
+}
+.nav-class a {
+    font-weight: bold;
+}
+.title-class {
+    color: burlywood;
+}
+.section-title-class {
+    color: tomato;
+}
+.text-class {
+    color: rgb(4, 59, 4);
+    font-weight: bolder;
+}
+.image-class {
+    border: 2px solid rgb(9, 46, 167);
+}
+.form-class {
+    color:white;
+   }
+.button-class {
+    background-color: tomato;
+}
+.footer-class {
+    background-color:rgb(9, 46, 167);
+    padding: 5px;
+    text-align: center;
+    color: white;
+}
