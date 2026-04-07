@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Clyde Dean III — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0d0b;
+    --ink: #f4efe6;
+    --dim: #8a8378;
+    --accent: #ff5b1f;
+    --accent-2: #e8d5a2;
+    --line: rgba(244, 239, 230, 0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.07;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transition: width 0.3s, height 0.3s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor.big { width: 56px; height: 56px; background: var(--accent-2); }
+  @media (max-width: 768px) { .cursor { display: none; } body { cursor: auto; } }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 28px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 50;
+    mix-blend-mode: difference;
+  }
+  nav .logo { font-weight: 900; font-size: 22px; letter-spacing: -0.02em; }
+  nav .logo span { color: var(--accent); }
+  nav ul { display: flex; gap: 36px; list-style: none; }
+  nav a {
+    color: var(--ink);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    position: relative;
+  }
+  nav a::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -4px;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+  nav a:hover::after { width: 100%; }
+
+  .hero {
+    min-height: 100vh;
+    padding: 180px 48px 80px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .hero .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 1s 0.2s forwards;
+  }
+  .hero .label::before { content: "◆ "; color: var(--accent); }
+  .hero h1 {
+    font-size: clamp(60px, 11vw, 180px);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin-bottom: 48px;
+  }
+  .hero h1 .line { display: block; overflow: hidden; }
+  .hero h1 .line span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: rise 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .hero h1 .line:nth-child(1) span { animation-delay: 0.3s; }
+  .hero h1 .line:nth-child(2) span { animation-delay: 0.45s; }
+  .hero h1 .italic { font-style: italic; font-weight: 400; color: var(--accent); }
+  .hero .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+    max-width: 1200px;
+    opacity: 0;
+    animation: fadeUp 1s 1s forwards;
+  }
+  .hero .meta p { max-width: 400px; color: var(--dim); font-size: 16px; line-height: 1.6; }
+  .hero .meta .coords {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    text-align: right;
+  }
+  .hero .meta .coords strong { color: var(--ink); display: block; font-weight: 500; }
+
+  .orb {
+    position: absolute;
+    top: 20%;
+    right: 8%;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--accent), transparent 70%);
+    filter: blur(60px);
+    opacity: 0.6;
+    animation: float 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .marquee {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 28px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .marquee-track { display: inline-block; animation: scroll 30s linear infinite; }
+  .marquee span {
+    font-size: 72px;
+    font-weight: 300;
+    font-style: italic;
+    padding: 0 40px;
+    color: var(--ink);
+  }
+  .marquee span::after {
+    content: "✦";
+    color: var(--accent);
+    margin-left: 80px;
+    font-style: normal;
+  }
+
+  .work { padding: 140px 48px; }
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 80px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 24px;
+  }
+  .section-head h2 { font-size: 48px; font-weight: 400; }
+  .section-head h2 em { color: var(--accent); }
+  .section-head .count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .projects { display: flex; flex-direction: column; }
+  .project {
+    display: grid;
+    grid-template-columns: 80px 1.2fr 2fr 1fr auto;
+    gap: 40px;
+    padding: 40px 20px;
+    border-bottom: 1px solid var(--line);
+    align-items: center;
+    cursor: none;
+    position: relative;
+    text-decoration: none;
+    color: var(--ink);
+    overflow: hidden;
+    transition: color 0.5s ease;
+  }
+  .project::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 0;
+  }
+  .project > * { position: relative; z-index: 1; }
+  .project:hover::before { transform: scaleY(1); transform-origin: top; }
+  .project:hover { color: var(--bg); }
+  .project:hover .tag { border-color: var(--bg); }
+  .project:hover .num, .project:hover .desc { color: var(--bg); opacity: 0.85; }
+  .project:hover .arrow { transform: rotate(0deg); }
+
+  .project .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--dim);
+  }
+  .project .title { font-size: 36px; font-weight: 400; letter-spacing: -0.02em; }
+  .project .title em { font-style: italic; }
+  .project .desc { font-size: 15px; line-height: 1.5; color: var(--dim); }
+  .project .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    transition: border-color 0.3s;
+  }
+  .arrow {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-45deg);
+    transition: transform 0.4s ease;
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+
+  footer {
+    padding: 120px 48px 48px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+  footer h3 {
+    font-size: clamp(40px, 8vw, 120px);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 48px;
+  }
+  footer h3 em { font-style: italic; color: var(--accent); }
+  footer .mail {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 18px 36px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    transition: all 0.4s;
+  }
+  footer .mail:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  footer .bottom {
+    margin-top: 120px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  @keyframes rise { to { transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes float {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(-40px, 30px) scale(1.1); }
+  }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.22,1,0.36,1); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    nav ul { gap: 20px; }
+    .hero, .work, footer { padding-left: 24px; padding-right: 24px; }
+    .project { grid-template-columns: 1fr; gap: 12px; padding: 32px 0; }
+    .project .arrow { display: none; }
+    .hero .meta { flex-direction: column; gap: 24px; align-items: flex-start; }
+    .hero .meta .coords { text-align: left; }
+    .orb { width: 200px; height: 200px; right: -50px; }
+    .section-head { flex-direction: column; gap: 12px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<nav>
+  <div class="logo">CD<span>.</span></div>
+  <ul>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="orb"></div>
+  <div class="label">Portfolio / 2026</div>
+  <h1>
+    <span class="line"><span>Designer &amp;</span></span>
+    <span class="line"><span><em class="italic">developer</em>.</span></span>
+  </h1>
+  <div class="meta">
+    <p>I build thoughtful digital experiences at the intersection of design and engineering. Available for select projects.</p>
+    <div class="coords">
+      <strong>BASED IN</strong>
+      Chapin, SC — 34.1°N 81.3°W<br><br>
+      <strong>STATUS</strong>
+      Open for work · 2026
+    </div>
+  </div>
+</section>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span>selected work</span><span>selected work</span><span>selected work</span><span>selected work</span>
+  </div>
+</div>
+
+<section class="work" id="work">
+  <div class="section-head reveal">
+    <h2>Featured <em>projects</em></h2>
+    <div class="count">[ 04 — Projects ]</div>
+  </div>
+
+  <div class="projects">
+    <!-- To add a project, copy one <a class="project"> block and edit the fields -->
+    <a class="project reveal" href="#">
+      <div class="num">01 / ——</div>
+      <div class="title">Aurora <em>Dashboard</em></div>
+      <div class="desc">Real-time analytics platform with live visualizations and adaptive theming.</div>
+      <div class="tags"><span class="tag">React</span><span class="tag">D3</span></div>
+      <div class="arrow">↗</div>
+    </a>
+
+    <a class="project reveal" href="#">
+      <div class="num">02 / ——</div>
+      <div class="title">Nocturne <em>CMS</em></div>
+      <div class="desc">A headless content management system built for writers, markdown-first.</div>
+      <div class="tags"><span class="tag">Next.js</span><span class="tag">Prisma</span></div>
+      <div class="arrow">↗</div>
+    </a>
+
+    <a class="project reveal" href="#">
+      <div class="num">03 / ——</div>
+      <div class="title">Meridian <em>Commerce</em></div>
+      <div class="desc">Boutique e-commerce with cinematic product storytelling and smooth checkout.</div>
+      <div class="tags"><span class="tag">Astro</span><span class="tag">Stripe</span></div>
+      <div class="arrow">↗</div>
+    </a>
+
+    <a class="project reveal" href="#">
+      <div class="num">04 / ——</div>
+      <div class="title">Ember <em>Studio</em></div>
+      <div class="desc">Creative portfolio system for independent designers and illustrators.</div>
+      <div class="tags"><span class="tag">Svelte</span><span class="tag">GSAP</span></div>
+      <div class="arrow">↗</div>
+    </a>
+  </div>
+</section>
+
+<footer id="contact">
+  <h3 class="reveal">Let's make <em>something</em>.</h3>
+  <a class="mail" href="mailto:clydesdaleog@gmail.com">clydesdaleog@gmail.com →</a>
+  <div class="bottom">
+    <span>© 2026 Clyde Dean III</span>
+    <span>Built with care</span>
+  </div>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, .project').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  const track = document.querySelector('.marquee-track');
+  track.innerHTML += track.innerHTML;
+</script>
+</body>
+</html>
