@@ -391,14 +391,14 @@
 
 <footer id="contact">
   <h3 class="reveal">Let's make <em>something</em>.</h3>
-  <a class="mail" href="/cdn-cgi/l/email-protection#086b64716c6d7b6c69646d676f486f65696164266b6765"><span class="__cf_email__" data-cfemail="46252a3f22233522272a23292106212b272f2a6825292b">[email&#160;protected]</span> →</a>
+  <a class="mail" href="mailto:clydesdaleog@gmail.com">clydesdaleog@gmail.com →</a>
   <div class="bottom">
     <span>© 2026 Clyde Dean III</span>
     <span>Built with care</span>
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   const cursor = document.getElementById('cursor');
   document.addEventListener('mousemove', e => {
     cursor.style.left = e.clientX + 'px';
@@ -410,4 +410,12 @@
   });
 
   const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.tar
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  setTimeout(() => document.querySelectorAll('.reveal').forEach(el => el.classList.add('in')), 1500);
+
+  const track = document.querySelector('.marquee-track');
+  track.innerHTML += track.innerHTML;
+</script>
+</body></html>
